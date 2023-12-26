@@ -1,5 +1,6 @@
 import {
     Body,
+    ConflictException,
     Injectable,
     NotFoundException,
     UnauthorizedException,
@@ -35,14 +36,21 @@ import { UserCreateInputWithHashedPassword } from './types/types';
     async addUser(@Body('email') email:string, @Body("password") password:string):Promise<AuthEntity>{
         const salt = await bcrypt.genSalt();
         const hashedPassword = await bcrypt.hash(password, salt);
+
         const userData: UserCreateInputWithHashedPassword = {
             email,
           password :  hashedPassword,
           };
-        const user = await this.prisma.user.create({ data:userData})
 
-        return{
-            accessToken: this.jwtService.sign({ userId: user.id }),
-        }
+         const userExists = await this.prisma.user.findFirst({where:{email}})
+
+         if(!userExists){
+            const user = await this.prisma.user.create({ data:userData})
+            return{
+                accessToken: this.jwtService.sign({ userId: user.id }),
+            }
+         }else{
+            throw new ConflictException('User already exist');
+         }
     }
   }
