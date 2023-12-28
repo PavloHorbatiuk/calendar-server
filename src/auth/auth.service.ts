@@ -21,15 +21,17 @@ import { UserCreateInputWithHashedPassword } from './types/types';
       if (!user) {
         throw new NotFoundException(`No user found for email: ${email}`);
       }
-  
+
       const isPasswordValid = user.password === password;
-  
+    
       if (!isPasswordValid) {
         throw new UnauthorizedException('Invalid password');
       }
   
       return {
         accessToken: this.jwtService.sign({ userId: user.id }),
+        id: user.id,
+        email: user.email
       };
     }
 
@@ -48,6 +50,8 @@ import { UserCreateInputWithHashedPassword } from './types/types';
             const user = await this.prisma.user.create({ data:userData})
             return{
                 accessToken: this.jwtService.sign({ userId: user.id }),
+                id: user.id,
+                email: user.email
             }
          }else{
             throw new ConflictException('User already exist');
