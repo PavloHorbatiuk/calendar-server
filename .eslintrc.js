@@ -8,7 +8,7 @@ module.exports = {
   plugins: ['@typescript-eslint/eslint-plugin', '@darraghor/nestjs-typed', 'eslint-plugin-import'],
   parserOptions: {
     project: 'tsconfig.json',
-    tsconfigRootDir: '.',
+    tsconfigRootDir: __dirname,
     ecmaVersion: 'latest',
     sourceType: 'module',
   },

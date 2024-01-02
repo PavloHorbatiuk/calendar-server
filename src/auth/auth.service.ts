@@ -16,13 +16,14 @@ import { UserCreateInputWithHashedPassword } from './types/types';
     constructor(private prisma: PrismaService, private jwtService: JwtService) {}
   
     async login(email: string, password: string): Promise<AuthEntity> {
+  
       const user = await this.prisma.user.findUnique({ where: { email: email } });
   
       if (!user) {
         throw new NotFoundException(`No user found for email: ${email}`);
       }
 
-      const isPasswordValid = user.password === password;
+      const isPasswordValid = await bcrypt.compare(password, user.password);
     
       if (!isPasswordValid) {
         throw new UnauthorizedException('Invalid password');
