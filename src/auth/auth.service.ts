@@ -47,8 +47,10 @@ import { UserCreateInputWithHashedPassword } from './types/types';
 
          const userExists = await this.prisma.user.findFirst({where:{email}})
 
+
          if(!userExists){
             const user = await this.prisma.user.create({ data:userData})
+        
             return{
                 accessToken: this.jwtService.sign({ userId: user.id }),
                 id: user.id,
