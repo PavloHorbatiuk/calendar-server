@@ -7,25 +7,22 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
-  id    Int     @id @default(autoincrement())
-  email String  @unique
-  name  String?
-  password String?
-  tasks Event[]
-}
-
-model Event {
-  id       Int        @id @default(autoincrement())
-  name    String
-  isDone Boolean
-  price  Int
+model event {
+  id       Int      @id @default(autoincrement())
+  name     String
+  isDone   Boolean
+  price    Int
   date     DateTime
-  author   User       @relation(fields: [authorId], references: [id])
-  authorId Int
-	@@map("Event")
+  authorId   Int
+  author     user     @relation(fields: [authorId], references: [id], map: "Event_authorId_fkey")
+
+  @@index([authorId], map: "Event_authorId_fkey")
 }
 
-
-
-
+model user {
+  id       Int      @id @default(autoincrement())
+  email    String  @unique(map: "User_email_key")
+  name     String?
+  password String?
+  event    event[]
+}
