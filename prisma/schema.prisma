@@ -13,14 +13,14 @@ model event {
   isDone   Boolean
   price    Int
   date     DateTime
-  authorId   Int
-  author     user     @relation(fields: [authorId], references: [id], map: "Event_authorId_fkey")
+  authorId Int
+  author   user     @relation(fields: [authorId], references: [id], map: "Event_authorId_fkey")
 
   @@index([authorId], map: "Event_authorId_fkey")
 }
 
 model user {
-  id       Int      @id @default(autoincrement())
+  id       Int     @id @default(autoincrement())
   email    String  @unique(map: "User_email_key")
   name     String?
   password String?
