@@ -1,4 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
+import { Type } from 'class-transformer';
 import { IsBoolean, IsDate, IsDateString, IsNotEmpty, IsNumber, IsString } from "class-validator";
 
 export class CreateEventDto {
@@ -7,6 +8,7 @@ export class CreateEventDto {
     @ApiProperty()
     name: string;
 
+    @Type(() => Date)
     @IsDateString()
     @IsNotEmpty()
     @IsDate()
@@ -25,5 +27,5 @@ export class CreateEventDto {
     @IsNumber()
     @IsNotEmpty()
     @ApiProperty()
-    authorId: number; 
+    authorId: number;
 }
