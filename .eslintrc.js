@@ -15,6 +15,7 @@ module.exports = {
   extends: ['plugin:@typescript-eslint/recommended', 'plugin:@darraghor/nestjs-typed/recommended'],
   ignorePatterns: ['.eslintrc.js'],
   rules: {
+    "quotes": ["error", "single"],
     '@darraghor/nestjs-typed/api-method-should-specify-api-response': 'off',
     '@typescript-eslint/interface-name-prefix': 'off',
     '@typescript-eslint/explicit-function-return-type': 'off',
@@ -22,7 +23,7 @@ module.exports = {
     '@typescript-eslint/no-unused-vars': 'error',
     '@typescript-eslint/consistent-type-imports': 'error',
     '@typescript-eslint/indent': ['error', 'tab', {
-        ignoredNodes: ['PropertyDefinition']
+      ignoredNodes: ['PropertyDefinition']
     }],
     '@typescript-eslint/naming-convention': [
       'error',
