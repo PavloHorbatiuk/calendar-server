@@ -1,4 +1,4 @@
-import { Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Post, Body, Patch, Param, Delete, Controller } from '@nestjs/common';
 import { ApiCreatedResponse, ApiTags } from '@nestjs/swagger';
 
 import { CreateEventDto } from './dto/create-event.dto';
@@ -8,6 +8,7 @@ import { EventEntity } from './entities/event.entity';
 import { EventService } from './event.service';
 
 @ApiTags('Event')
+@Controller('events')
 export class EventController {
 	constructor(private readonly eventService: EventService) {}
 
