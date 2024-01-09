@@ -11,19 +11,21 @@ import { PrismaService } from 'src/prisma/prisma.service';
 
 import type { AuthEntity } from './entity/auth.entity';
 import type { UserCreateInputWithHashedPassword } from './types/types';
+import { CreateUserDto } from './dto/createUser.dto';
+import { LoginDto } from './dto/login.dto';
 
 @Injectable()
 export class AuthService {
-	constructor(private prisma: PrismaService, private jwtService: JwtService) {}
+	constructor(private prisma: PrismaService, private jwtService: JwtService) { }
 
-	async login(email: string, password: string): Promise<AuthEntity> {
-		const user = await this.prisma.user.findUnique({ where: { email: email } });
+	async login(loginDto: LoginDto): Promise<AuthEntity> {
+		const user = await this.prisma.user.findUnique({ where: { email: loginDto.email } });
 
 		if (!user) {
-			throw new NotFoundException(`No user found for email: ${email}`);
+			throw new NotFoundException(`No user found for email: ${loginDto.email}`);
 		}
 
-		const isPasswordValid = await bcrypt.compare(password, user.password);
+		const isPasswordValid = await bcrypt.compare(loginDto.password, user.password);
 
 		if (!isPasswordValid) {
 			throw new UnauthorizedException('Invalid password');
@@ -36,21 +38,17 @@ export class AuthService {
 		};
 	}
 
-	async addUser(@Body('email') email:string, @Body("password") password:string):Promise<AuthEntity>{
-		const salt = await bcrypt.genSalt();
-		const hashedPassword = await bcrypt.hash(password, salt);
+	async addUser(userDto: CreateUserDto): Promise<AuthEntity> {
+		const userExists = await this.prisma.user.findFirst({ where: { email: userDto.email } })
 
-		const userData: UserCreateInputWithHashedPassword = {
-			email,
-			password :  hashedPassword,
-		};
-
-		const userExists = await this.prisma.user.findFirst({ where:{ email } })
-
-
-		if (!userExists){
-			const user = await this.prisma.user.create({ data:userData })
-
+		if (!userExists) {
+			const salt = await bcrypt.genSalt();
+			const hashedPassword = await bcrypt.hash(userDto.password, salt);
+			const userData: UserCreateInputWithHashedPassword = {
+				email: userDto.email,
+				password: hashedPassword,
+			};
+			const user = await this.prisma.user.create({ data: userData })
 			return {
 				accessToken: this.jwtService.sign({ userId: user.id }),
 				id: user.id,
