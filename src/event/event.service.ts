@@ -23,19 +23,12 @@ export class EventService {
 		}
 	}
 
-	async findAll(userId: number) {
-		const userExists = await this.checkUserExists(userId)
-		if (userExists) {
-			const resultFindAll = await this.prisma.event.findMany({
-				where: {
-					authorId: userId
-				}
-			})
+	async findAll() {
+			const resultFindAll = await this.prisma.event.findMany()
 			if (resultFindAll != null) {
 				return resultFindAll
 			} else { throw new NotFoundException("Not found") }
-		} else { throw new NotFoundException("User dosen't exists") }
-	}
+		} 
 
 	async findOne(findOneEventDto: FindOneEventDto) {
 		const userExists = await this.prisma.exists(this.prisma.user, {

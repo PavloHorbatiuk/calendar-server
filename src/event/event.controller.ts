@@ -1,4 +1,4 @@
-import { Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Post, Body, Patch, Param, Delete, Controller, UseGuards } from '@nestjs/common';
 import { ApiCreatedResponse, ApiTags } from '@nestjs/swagger';
 
 import { CreateEventDto } from './dto/create-event.dto';
@@ -6,7 +6,9 @@ import { FindOneEventDto } from './dto/findOne-event.dto'
 import { UpdateEventDto } from './dto/update-event.dto';
 import { EventEntity } from './entities/event.entity';
 import { EventService } from './event.service';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 
+@Controller('event')
 @ApiTags('Event')
 export class EventController {
 	constructor(private readonly eventService: EventService) {}
@@ -18,8 +20,9 @@ export class EventController {
 	}
 
 	@Post('/all')
-	findAll(@Body() id: number) {
-		return this.eventService.findAll(id);
+	@UseGuards(JwtAuthGuard)
+	findAll() {
+		return this.eventService.findAll();
 	}
 
 	@Post('/findOne')
