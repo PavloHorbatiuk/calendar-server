@@ -3,10 +3,9 @@ import { PrismaModule } from 'src/prisma/prisma.module';
 
 import { EventController } from './event.controller';
 import { EventService } from './event.service';
-import { AuthModule } from '../auth/auth.module';
 
 @Module({
-	imports:[PrismaModule, AuthModule],
+	imports:[PrismaModule],
 	controllers: [EventController],
 	providers: [EventService],
 })
