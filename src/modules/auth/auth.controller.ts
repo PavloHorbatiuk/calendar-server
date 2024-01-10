@@ -24,18 +24,4 @@ export class AuthController {
 	Signup(@Body() CreateUserDto: CreateUserDto) {
 		return this.authService.addUser(CreateUserDto);
 	}
-
-
-	@UseGuards(JwtAuthGuard)
-	@Post('test')
-	test(){
-		return true
-	}
-
-
-	@UseGuards(JwtAuthGuard)
-	@Post('test')
-	test(){
-		return true
-	}
 }
