@@ -14,10 +14,11 @@ export const jwtSecret = 'zjP9i6ZS5LoSKCRk';
 		PrismaModule,
 		PassportModule,
 		JwtModule.register({
-			secret: jwtSecret,
-			signOptions: { expiresIn: '5m' },
+			secret: process.env.JWT_KEY || 'SECRET',
+			signOptions: { expiresIn: '1h' },
 		}),
 	],
+	exports:[AuthService, JwtModule],
 	controllers: [AuthController],
 	providers: [AuthService, JwtStrategy],
 })
