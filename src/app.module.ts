@@ -1,12 +1,12 @@
 import { Module } from '@nestjs/common';
-
-import { AuthModule } from './auth/auth.module';
-import { EventModule } from './event/event.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { ConfigModule } from '@nestjs/config';
+import { AuthModule } from './modules/auth/auth.module';
+import { EventModule } from './modules/event/event.module';
+import { UsersModule } from './modules/users/users.module';
 
 @Module({
-	imports: [AuthModule, PrismaModule, EventModule, ConfigModule.forRoot({envFilePath:'.env'})],
+	imports: [AuthModule,UsersModule, PrismaModule, EventModule, ConfigModule.forRoot({envFilePath:'.env'})],
 	controllers: [],
 	providers: [],
 })

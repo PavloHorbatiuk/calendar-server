@@ -5,7 +5,6 @@ import { PrismaModule } from 'src/prisma/prisma.module';
 
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
-import { JwtStrategy } from 'src/strategy';
 
 export const jwtSecret = 'zjP9i6ZS5LoSKCRk';
 
@@ -20,6 +19,6 @@ export const jwtSecret = 'zjP9i6ZS5LoSKCRk';
 	],
 	exports:[AuthService, JwtModule],
 	controllers: [AuthController],
-	providers: [AuthService, JwtStrategy],
+	providers: [AuthService],
 })
 export class AuthModule {}
