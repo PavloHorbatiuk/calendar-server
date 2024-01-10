@@ -14,21 +14,21 @@ export class EventService {
 		const userExists = await this.checkUserExists(createEventDto.authorId)
 		const isSameTime = await this.prisma.exists(this.prisma.event, { date: createEventDto.date })
 		if (isSameTime) {
-			throw new NotFoundException("in this date and time already lessons exists")
+			throw new NotFoundException('in this date and time already lessons exists')
 		}
 		if (userExists) {
 			return this.prisma.event.create({ data: createEventDto })
 		} else {
-			throw new NotFoundException("User dosen't exists")
+			throw new NotFoundException('User dosen\'t exists')
 		}
 	}
 
 	async findAll() {
-			const resultFindAll = await this.prisma.event.findMany()
-			if (resultFindAll != null) {
-				return resultFindAll
-			} else { throw new NotFoundException("Not found") }
-		} 
+		const resultFindAll = await this.prisma.event.findMany()
+		if (resultFindAll != null) {
+			return resultFindAll
+		} else { throw new NotFoundException('Not found') }
+	}
 
 	async findOne(findOneEventDto: FindOneEventDto) {
 		const userExists = await this.prisma.exists(this.prisma.user, {
@@ -45,8 +45,8 @@ export class EventService {
 			})
 			if (result != null) {
 				return result
-			} else { throw new NotFoundException("Not found") }
-		} else { throw new NotFoundException("User dosen't exists") }
+			} else { throw new NotFoundException('Not found') }
+		} else { throw new NotFoundException('User dosen\'t exists') }
 	}
 
 	async update(userId: number, updateEventDto: UpdateEventDto) {
@@ -58,8 +58,8 @@ export class EventService {
 			})
 			if (resultUpdate != null){
 				return resultUpdate
-			} else { throw new NotFoundException("Update has not been completed")}
-		} else { throw new NotFoundException("User dosen't exists") }
+			} else { throw new NotFoundException('Update has not been completed')}
+		} else { throw new NotFoundException('User dosen\'t exists') }
 	}
 
 	async remove(userId: number, eventId: number) {
@@ -70,8 +70,8 @@ export class EventService {
 			})
 			if (resultDelete != null){
 				return resultDelete
-			} else {throw new NotFoundException("Delete has not been complete")}
-		} else { throw new NotFoundException("User dosen't exists") }
+			} else {throw new NotFoundException('Delete has not been complete')}
+		} else { throw new NotFoundException('User dosen\'t exists') }
 	}
 
 	public async checkUserExists(userId: number): Promise<boolean> {
