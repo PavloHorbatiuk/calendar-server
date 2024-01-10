@@ -6,7 +6,7 @@ import { FindOneEventDto } from './dto/findOne-event.dto'
 import { UpdateEventDto } from './dto/update-event.dto';
 import { EventEntity } from './entities/event.entity';
 import { EventService } from './event.service';
-import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
 
 @Controller('event')
 @ApiTags('Event')
