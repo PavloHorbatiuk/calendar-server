@@ -3,10 +3,6 @@ import { Prisma, PrismaClient } from '@prisma/client';
 
 @Injectable()
 export class PrismaService extends PrismaClient {
-	constructor() {
-		super();
-	}
-
 	async exists<T>(
 		model: T,
 		where: Prisma.Args<T, 'findFirst'>['where']

@@ -1,5 +1,5 @@
 import { PartialType, ApiProperty } from '@nestjs/swagger';
-import {  IsNotEmpty, IsNumber } from "class-validator";
+import {  IsNotEmpty, IsNumber } from 'class-validator';
 
 import { CreateEventDto } from './create-event.dto';
 

@@ -1,60 +1,36 @@
-import {
-	ConflictException,
-	Injectable,
-	NotFoundException,
-	UnauthorizedException,
-} from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
-import { PrismaService } from 'src/prisma/prisma.service';
+import { APP_ERROR } from 'src/common/errors';
 
-import type { AuthEntity } from './entity/auth.entity';
-import type { UserCreateInputWithHashedPassword } from './types/types';
-import { CreateUserDto } from './dto/createUser.dto';
-import { LoginDto } from './dto/login.dto';
+import { TokenService } from '../token/token.service';
+import { UsersService } from '../users/users.service';
+
+import type { UserLoginDTO } from './dto';
+import type { AuthUserResponse } from './response';
+import type { CreateUserDTO } from '../users/dto';
+
 
 @Injectable()
 export class AuthService {
-	constructor(private prisma: PrismaService, private jwtService: JwtService) { }
+	constructor(
+		private readonly userService: UsersService,
+		private readonly tokenService:TokenService
+	) { }
 
-	async login(loginDto: LoginDto): Promise<AuthEntity> {
-		const user = await this.prisma.user.findUnique({ where: { email: loginDto.email } });
+	async registerUsers(dto: CreateUserDTO): Promise<CreateUserDTO> {
+		const existUser = await this.userService.findUserByEmail(dto.email)
+		if (existUser) throw new BadRequestException(APP_ERROR.USER_EXIST)
 
-		if (!user) {
-			throw new NotFoundException(`No user found for email: ${loginDto.email}`);
-		}
-
-		const isPasswordValid = await bcrypt.compare(loginDto.password, user.password);
-
-		if (!isPasswordValid) {
-			throw new UnauthorizedException('Invalid password');
-		}
-
-		return {
-			accessToken: this.jwtService.sign({ userId: user.id }),
-			id: user.id,
-			email: user.email
-		};
+		return this.userService.createUser(dto)
 	}
 
-	async addUser(userDto: CreateUserDto): Promise<AuthEntity> {
-		const userExists = await this.prisma.user.findFirst({ where: { email: userDto.email } })
+	async loginUser(dto: UserLoginDTO):Promise<AuthUserResponse> {
+		const existUser = await this.userService.findUserByEmail(dto.email)
+		if (!existUser) throw new BadRequestException(APP_ERROR.USER_NOT_EXIST)
+		const validatePassword = await bcrypt.compare(dto.password, existUser.password)
+		if (!validatePassword) throw new BadRequestException(APP_ERROR.WRONG_DATA)
+		const token = await this.tokenService.generateJwtToken(dto)
 
-		if (!userExists) {
-			const salt = await bcrypt.genSalt();
-			const hashedPassword = await bcrypt.hash(userDto.password, salt);
-			const userData: UserCreateInputWithHashedPassword = {
-				email: userDto.email,
-				password: hashedPassword,
-			};
-			const user = await this.prisma.user.create({ data: userData })
-			return {
-				accessToken: this.jwtService.sign({ userId: user.id }),
-				id: user.id,
-				email: user.email
-			}
-		} else {
-			throw new ConflictException('User already exist');
-		}
+		return { ...existUser, token }
 	}
 }
