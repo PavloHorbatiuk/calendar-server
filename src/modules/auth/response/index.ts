@@ -16,7 +16,7 @@ export class AuthUserResponse {
 
     @ApiProperty()
     @IsString()
-    password: string;
+    password?: string;
 
     @ApiProperty()
     @IsString()

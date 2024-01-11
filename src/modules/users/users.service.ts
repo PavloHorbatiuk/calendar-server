@@ -9,18 +9,36 @@ import type { CreateUserDTO } from './dto';
 export class UsersService {
 	constructor(private prisma: PrismaService) { }
 
-	async findUserByEmail(email:string){
-		return this.prisma.user.findFirst({ where:{ email } })
+	async findUserByEmail(email: string) {
+		return this.prisma.user.findFirst({ where: { email } })
 	}
 
 	async hashPassword(password: string) {
 		return bcrypt.hash(password, 10)
 	}
 
-	async createUser(dto: CreateUserDTO):Promise<CreateUserDTO> {
+	async createUser(dto: CreateUserDTO): Promise<CreateUserDTO> {
 		dto.password = await this.hashPassword(dto.password)
 		await this.prisma.user.create({ data: dto })
 
 		return dto
 	}
+
+	exclude<User, Key extends keyof User>(
+		user: User,
+		keys: Key[]
+	): Omit<User, Key> {
+		return Object.fromEntries(
+			Object.entries(user).filter(([key]) => !keys.includes(key as Key))
+		) as Omit<User, Key>;
+	}
+
+	async publicUser(email: string) {
+		const user = await this.prisma.user.findFirst({ where: { email } });
+		if (user) {
+		  const userWithoutPassword = this.exclude(user, ['password']);
+		  return userWithoutPassword;
+		}
+		return null; 
+	  }
 }
