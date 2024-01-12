@@ -1,9 +1,9 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import * as bcrypt from 'bcrypt'
+import { APP_ERROR } from 'src/common/errors';
 import { PrismaService } from 'src/prisma/prisma.service';
 
 import type { CreateUserDTO, UpdateUserDTO } from './dto';
-import { APP_ERROR } from 'src/common/errors';
 
 
 @Injectable()
@@ -50,7 +50,14 @@ export class UsersService {
 			throw new BadRequestException(APP_ERROR.TO_MANY_FIELDS)
 		} else {
 			 await this.prisma.user.update({ where: { email: email }, data: { name: dto.name } })
+
 			 return dto
 		}
+	}
+
+	async deleteUser(email: string) {
+		await this.prisma.user.delete({ where: { email } })
+
+		return true
 	}
 }
