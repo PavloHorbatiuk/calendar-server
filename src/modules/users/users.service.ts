@@ -1,8 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import * as bcrypt from 'bcrypt'
 import { PrismaService } from 'src/prisma/prisma.service';
 
-import type { CreateUserDTO } from './dto';
+import type { CreateUserDTO, UpdateUserDTO } from './dto';
+import { APP_ERROR } from 'src/common/errors';
 
 
 @Injectable()
@@ -36,9 +37,20 @@ export class UsersService {
 	async publicUser(email: string) {
 		const user = await this.prisma.user.findFirst({ where: { email } });
 		if (user) {
-		  const userWithoutPassword = this.exclude(user, ['password']);
-		  return userWithoutPassword;
+			const userWithoutPassword = this.exclude(user, ['password']);
+
+			return userWithoutPassword;
 		}
-		return null; 
-	  }
+
+		return null;
+	}
+
+	async updateUser(email: string, dto: UpdateUserDTO) {
+		if (Object.keys(dto).length > 2) {
+			throw new BadRequestException(APP_ERROR.TO_MANY_FIELDS)
+		} else {
+			 await this.prisma.user.update({ where: { email: email }, data: { name: dto.name } })
+			 return dto
+		}
+	}
 }
