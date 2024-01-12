@@ -1,11 +1,11 @@
 import { Body, Controller, Post, UseGuards } from '@nestjs/common';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
+import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
 
 import { AuthService } from './auth.service';
 import { UserLoginDTO } from './dto';
 import { AuthUserResponse } from './response';
 import { CreateUserDTO } from '../users/dto';
-import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -26,9 +26,9 @@ export class AuthController {
 	}
 
 
-    @UseGuards(JwtAuthGuard)
-    @Post('test')
-    test(){
-        return true
-    }
+	@UseGuards(JwtAuthGuard)
+	@Post('test')
+	test(){
+		return true
+	}
 }
