@@ -24,5 +24,4 @@ export class AuthController {
 	login(@Body() dto: UserLoginDTO): Promise<AuthUserResponse> {
 		return this.authService.loginUser(dto)
 	}
-
 }
