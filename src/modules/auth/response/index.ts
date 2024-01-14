@@ -4,7 +4,7 @@ import { IsNumber, IsString } from 'class-validator';
 export class AuthUserResponse {
     @ApiProperty()
     @IsNumber()
-    id: number;
+    id?: number;
 
     @ApiProperty()
     @IsString()
