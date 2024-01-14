@@ -37,7 +37,7 @@ export class UsersService {
 	async publicUser(email: string) {
 		const user = await this.prisma.user.findFirst({ where: { email } });
 		if (user) {
-			const userWithoutPassword = this.exclude(user, ['password']);
+			const userWithoutPassword = this.exclude(user, ['password', 'id']);
 
 			return userWithoutPassword;
 		}
