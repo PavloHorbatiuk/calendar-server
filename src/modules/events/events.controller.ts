@@ -31,16 +31,19 @@ export class EventsController {
 		return this.eventsService.findAll(user);
 	}
 
+  @ApiTags('API')
 	@Get(':id')
 	findOne(@Param('id') id: string) {
 		return this.eventsService.findOne(+id);
 	}
 
+  @ApiTags('API')
 	@Patch(':id')
 	update(@Param('id') id: string, @Body() updateEventDto: UpdateEventDto) {
 		return this.eventsService.update(+id, updateEventDto);
 	}
 
+  @ApiTags('API')
 	@Delete(':id')
 	remove(@Param('id') id: string) {
 		return this.eventsService.remove(+id);
