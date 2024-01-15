@@ -17,7 +17,6 @@ export class EventsController {
 	@Post()
 	create(@Body() createEventDto: CreateEventDto, @Req() request) {
 		const user = request.user
-
 		return this.eventsService.create(createEventDto, user);
 	}
 
