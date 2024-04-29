@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { APP_ERROR } from 'src/common/errors';
 
@@ -17,19 +17,29 @@ export class AuthService {
 		private readonly tokenService: TokenService
 	) { }
 
-	async registerUsers(dto: CreateUserDTO): Promise<CreateUserDTO> {
+	async registerUsers(dto: CreateUserDTO) {
 		const existUser = await this.userService.findUserByEmail(dto.email)
-		if (existUser) throw new BadRequestException(APP_ERROR.USER_EXIST)
 
-		return this.userService.createUser(dto)
+		if (existUser) throw new HttpException(APP_ERROR.USER_EXIST, HttpStatus.BAD_REQUEST);
+
+		await this.userService.createUser(dto)
+
+		const userDate = {
+			mail: dto.email,
+			name: dto.name,
+		}
+		const token = await this.tokenService.generateJwtToken(userDate);
+
+		return { ...userDate, token };
 	}
 
 	async loginUser(dto: UserLoginDTO): Promise<AuthUserResponse> {
 		const existUser = await this.userService.findUserByEmail(dto.email)
-		if (!existUser) throw new BadRequestException(APP_ERROR.USER_NOT_EXIST)
+		if (!existUser) throw new HttpException(APP_ERROR.USER_NOT_EXIST, HttpStatus.BAD_REQUEST);
 
 		const validatePassword = await bcrypt.compare(dto.password, existUser.password)
-		if (!validatePassword) throw new BadRequestException(APP_ERROR.WRONG_DATA)
+		if (!validatePassword) throw new HttpException(APP_ERROR.WRONG_DATA, HttpStatus.BAD_REQUEST);
+
 		const userDate = {
 	        id:existUser.id,
 			name: existUser.name,
