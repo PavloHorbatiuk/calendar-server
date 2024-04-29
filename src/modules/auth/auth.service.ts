@@ -21,6 +21,9 @@ export class AuthService {
 		const existUser = await this.userService.findUserByEmail(dto.email)
 
 		if (existUser) throw new HttpException(APP_ERROR.USER_EXIST, HttpStatus.BAD_REQUEST);
+
+		await this.userService.createUser(dto)
+
 		const userDate = {
 			mail: dto.email,
 			name: dto.name,
