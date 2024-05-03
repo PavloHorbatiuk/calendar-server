@@ -1,4 +1,4 @@
-import { BadRequestException, HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { APP_ERROR } from 'src/common/errors';
 
@@ -7,8 +7,7 @@ import { UsersService } from '../users/users.service';
 
 import type { UserLoginDTO } from './dto';
 import type { AuthUserResponse } from './response';
-import type { CreateUserDTO } from '../users/dto';
-
+import type { CreateUserDto } from '../users/dto';
 
 @Injectable()
 export class AuthService {
@@ -17,20 +16,15 @@ export class AuthService {
 		private readonly tokenService: TokenService
 	) { }
 
-	async registerUsers(dto: CreateUserDTO) {
+	async registerUsers(dto: CreateUserDto) {
 		const existUser = await this.userService.findUserByEmail(dto.email)
 
 		if (existUser) throw new HttpException(APP_ERROR.USER_EXIST, HttpStatus.BAD_REQUEST);
 
-		await this.userService.createUser(dto)
+		const { id, email, name } = await this.userService.createUser(dto)
+		const token = await this.tokenService.generateJwtToken({ id, email, name });
 
-		const userDate = {
-			mail: dto.email,
-			name: dto.name,
-		}
-		const token = await this.tokenService.generateJwtToken(userDate);
-
-		return { ...userDate, token };
+		return { email, name,  token };
 	}
 
 	async loginUser(dto: UserLoginDTO): Promise<AuthUserResponse> {

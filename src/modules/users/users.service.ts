@@ -1,14 +1,16 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt'
 import { APP_ERROR } from 'src/common/errors';
 import { PrismaService } from 'src/prisma/prisma.service';
 
-import type { CreateUserDTO, UpdateUserDTO } from './dto';
+import { TokenService } from '../token/token.service';
 
+import type { CreateUserDto, UpdateUserDto } from './dto';
 
 @Injectable()
 export class UsersService {
-	constructor(private prisma: PrismaService) { }
+	constructor(private prisma: PrismaService, private token: TokenService, private jwtService: JwtService) { }
 
 	async findUserByEmail(email: string) {
 		return this.prisma.user.findFirst({ where: { email } })
@@ -18,11 +20,10 @@ export class UsersService {
 		return bcrypt.hash(password, 10)
 	}
 
-	async createUser(dto: CreateUserDTO): Promise<CreateUserDTO> {
+	async createUser(dto: CreateUserDto) {
 		dto.password = await this.hashPassword(dto.password)
-		await this.prisma.user.create({ data: dto })
 
-		return dto
+		return await this.prisma.user.create({ data: dto })
 	}
 
 	exclude<User, Key extends keyof User>(
@@ -45,14 +46,16 @@ export class UsersService {
 		return null;
 	}
 
-	async updateUser(email: string, dto: UpdateUserDTO) {
-		if (Object.keys(dto).length > 2) {
-			throw new BadRequestException(APP_ERROR.TO_MANY_FIELDS)
-		} else {
-			 await this.prisma.user.update({ where: { email: email }, data: { name: dto.name } })
+	async updateUser(dto: UpdateUserDto ) {
+		const payload = await this.jwtService.decode(dto.token)
+		const existedEmail = this.prisma.user.findFirst({ where: { email: payload.user.email } })
 
-			 return dto
-		}
+		if (existedEmail) throw new HttpException(APP_ERROR.USER_EXIST, HttpStatus.BAD_REQUEST);
+
+		const { email, name, id } = await this.prisma.user.update({ where: { id: payload.user.id }, data: { email: dto.email, name: dto.name } })
+		const token = await this.token.generateJwtToken({ email, name, id })
+
+		 return { token, email, name }
 	}
 
 	async deleteUser(email: string) {
