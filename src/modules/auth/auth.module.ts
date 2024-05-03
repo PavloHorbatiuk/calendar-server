@@ -10,6 +10,6 @@ import { UsersModule } from '../users/users.module';
 @Module({
 	imports:[UsersModule, TokenModule],
 	controllers: [AuthController],
-	providers: [AuthService,ConfigService , JwtStrategy]
+	providers: [AuthService, ConfigService , JwtStrategy ]
 })
 export class AuthModule {}
