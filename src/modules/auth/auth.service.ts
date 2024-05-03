@@ -9,7 +9,6 @@ import type { UserLoginDTO } from './dto';
 import type { AuthUserResponse } from './response';
 import type { CreateUserDto } from '../users/dto';
 
-
 @Injectable()
 export class AuthService {
 	constructor(

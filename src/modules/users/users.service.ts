@@ -1,13 +1,12 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt'
-// import { APP_ERROR } from 'src/common/errors';
+import { APP_ERROR } from 'src/common/errors';
 import { PrismaService } from 'src/prisma/prisma.service';
 
 import { TokenService } from '../token/token.service';
 
 import type { CreateUserDto, UpdateUserDto } from './dto';
-
 
 @Injectable()
 export class UsersService {
@@ -49,6 +48,9 @@ export class UsersService {
 
 	async updateUser(dto: UpdateUserDto ) {
 		const payload = await this.jwtService.decode(dto.token)
+		const existedEmail = this.prisma.user.findFirst({ where: { email: payload.user.email } })
+
+		if (existedEmail) throw new HttpException(APP_ERROR.USER_EXIST, HttpStatus.BAD_REQUEST);
 
 		const { email, name, id } = await this.prisma.user.update({ where: { id: payload.user.id }, data: { email: dto.email, name: dto.name } })
 		const token = await this.token.generateJwtToken({ email, name, id })
