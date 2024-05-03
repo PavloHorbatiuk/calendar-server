@@ -12,6 +12,10 @@ export class EventsService {
 	constructor(private readonly prisma:PrismaService){}
 
 	async create(createEventDto: CreateEventDto, user) {
+		const events = await this.prisma.event.findFirst({where:{authorId:user.id, date: createEventDto.date}})
+		if(events){
+			throw new HttpException(APP_ERROR.EVENT_EXIST, HttpStatus.BAD_REQUEST) 
+		}
 		return await this.prisma.event.create({ data:{ ...createEventDto, authorId:user.id } })
 	}
 
