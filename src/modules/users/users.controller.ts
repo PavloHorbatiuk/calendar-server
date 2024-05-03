@@ -5,12 +5,11 @@ import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
 import { UpdateUserDto } from './dto';
 import { UsersService } from './users.service';
 
-
+@ApiTags('API')
 @Controller('users')
 export class UsersController {
 	constructor(private readonly userService: UsersService) { }
 
-	@ApiTags('API')
 	@ApiResponse({ status: 200, type: UpdateUserDto })
 	@UseGuards(JwtAuthGuard)
 	@Patch('/update')
@@ -18,7 +17,6 @@ export class UsersController {
 		return this.userService.updateUser(userDto)
 	}
 
-	@ApiTags('API')
 	@ApiResponse({ status: 200 })
 	@Delete('/delete')
 	@UseGuards(JwtAuthGuard)
