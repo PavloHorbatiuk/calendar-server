@@ -3,6 +3,7 @@ import { NestFactory } from '@nestjs/core';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 
 import { AppModule } from './app.module';
+import { HttpExceptionFilter } from './exeption-filters/http.exceprtion-filter';
 
 declare const module: any;
 
@@ -25,6 +26,8 @@ async function bootstrap() {
 	});
 	const PORT = process.env.PORT || 5000;
 	app.useGlobalPipes(new ValidationPipe())
+
+	app.useGlobalFilters(new HttpExceptionFilter())
 	await app.listen(PORT);
 
 	if (module.hot) {
