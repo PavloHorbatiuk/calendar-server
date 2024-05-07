@@ -23,13 +23,7 @@ export class EventsService {
 
 
 	async findAll(user: user) {
-		const cacheKey = `events:${user.id}`
-		let events:EventSchema[] = await this.cacheManager.get(cacheKey)
-		if(!events){
-			events =  await this.prisma.event.findMany({ where: { authorId: +user.id } });
-			await this.cacheManager.set(cacheKey, events)
-		}
-		return events
+		return await this.prisma.event.findMany({ where: { authorId: +user.id } });
 	}
 
 	async findOne(id: number) {

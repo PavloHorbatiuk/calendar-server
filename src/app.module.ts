@@ -17,7 +17,7 @@ import { CacheModule } from '@nestjs/cache-manager';
 		EventsModule,
 		ConfigModule.forRoot({ envFilePath: '.env' }),
 		TokenModule,
-		CacheModule.register({isGlobal:true, ttl: 15000})
+		CacheModule.register({isGlobal:true, ttl: 30 * 10000})
 	],
 	controllers: [],
 	providers: [],
