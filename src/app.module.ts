@@ -8,6 +8,7 @@ import { UsersModule } from './modules/users/users.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { LoggerMiddleware } from './middleware/logger.middleware';
 import { CacheModule } from '@nestjs/cache-manager';
+import { redisStore } from 'cache-manager-redis-yet';
 
 @Module({
 	imports: [
@@ -17,7 +18,9 @@ import { CacheModule } from '@nestjs/cache-manager';
 		EventsModule,
 		ConfigModule.forRoot({ envFilePath: '.env' }),
 		TokenModule,
-		CacheModule.register({isGlobal:true, ttl: 30 * 10000})
+		CacheModule.register({isGlobal:true, ttl: 30 * 10000, 
+			store: redisStore
+			})
 	],
 	controllers: [],
 	providers: [],
