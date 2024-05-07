@@ -23,10 +23,10 @@ export class EventsController {
 
 	@UseGuards(JwtAuthGuard)
 	@Get()
-	findAll(@Req() request): Promise<EventSchema[]> {
+	async findAll(@Req() request): Promise<EventSchema[]> {
 		const user = request.user
 
-		return this.eventsService.findAll(user);
+		return await  this.eventsService.findAll(user);
 	}
 
 	@Get(':id')

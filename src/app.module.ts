@@ -7,6 +7,7 @@ import { TokenModule } from './modules/token/token.module';
 import { UsersModule } from './modules/users/users.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { LoggerMiddleware } from './middleware/logger.middleware';
+import { CacheModule } from '@nestjs/cache-manager';
 
 @Module({
 	imports: [
@@ -15,7 +16,8 @@ import { LoggerMiddleware } from './middleware/logger.middleware';
 		PrismaModule,
 		EventsModule,
 		ConfigModule.forRoot({ envFilePath: '.env' }),
-		TokenModule
+		TokenModule,
+		CacheModule.register({isGlobal:true, ttl: 15000})
 	],
 	controllers: [],
 	providers: [],

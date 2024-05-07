@@ -1,15 +1,17 @@
-import {  HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import {  HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { APP_ERROR } from 'src/common/errors';
 import { PrismaService } from 'src/prisma/prisma.service';
 
 import type { CreateEventDto } from './dto/create-event.dto';
 import type { UpdateEventDto } from './dto/update-event.dto';
 import type { user } from '@prisma/client';
+import { Cache } from 'cache-manager';
+import { EventSchema } from './entities/event.entity';
 
 
 @Injectable()
 export class EventsService {
-	constructor(private readonly prisma:PrismaService){}
+	constructor(private readonly prisma:PrismaService, @Inject('CACHE_MANAGER') private cacheManager: Cache){}
 
 	async create(createEventDto: CreateEventDto, user) {
 		const events = await this.prisma.event.findFirst({where:{authorId:user.id, date: createEventDto.date}})
@@ -19,8 +21,15 @@ export class EventsService {
 		return await this.prisma.event.create({ data:{ ...createEventDto, authorId:user.id } })
 	}
 
+
 	async findAll(user: user) {
-		return await this.prisma.event.findMany({ where: { authorId: +user.id } });
+		const cacheKey = `events:${user.id}`
+		let events:EventSchema[] = await this.cacheManager.get(cacheKey)
+		if(!events){
+			events =  await this.prisma.event.findMany({ where: { authorId: +user.id } });
+			await this.cacheManager.set(cacheKey, events)
+		}
+		return events
 	}
 
 	async findOne(id: number) {
@@ -40,4 +49,5 @@ export class EventsService {
 
 		return this.prisma.event.delete({ where: { id: id } });
 	}
+
 }
