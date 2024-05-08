@@ -1,3 +1,4 @@
+import { CacheInterceptor } from '@nestjs/cache-manager';
 import { Controller, Get, Post, Body, Patch, Param, Delete, Req, UseGuards, UseInterceptors } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
@@ -7,7 +8,6 @@ import { UpdateEventDto } from './dto/update-event.dto';
 import { EventsService } from './events.service';
 
 import type { EventSchema } from './entities/event.entity';
-import { CacheInterceptor } from '@nestjs/cache-manager';
 
 @ApiTags('API')
 @UseInterceptors(CacheInterceptor)

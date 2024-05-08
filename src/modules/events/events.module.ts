@@ -1,11 +1,23 @@
 import { Module } from '@nestjs/common';
 import { PrismaModule } from 'src/prisma/prisma.module';
+import { ClientsModule, Transport } from '@nestjs/microservices';
+
 
 import { EventsController } from './events.controller';
 import { EventsService } from './events.service';
 
 @Module({
-	imports:[PrismaModule],
+	imports:[
+		ClientsModule.register([
+			{
+		      name: 'EVENTS_SERVICE',
+			  transport: Transport.RMQ,
+			  options:{
+					urls:['amqp://localhost:5672'],
+					queue:'events-queue'
+				} }
+		]),
+		PrismaModule],
 	controllers: [EventsController],
 	providers: [EventsService],
 })

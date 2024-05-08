@@ -6,5 +6,5 @@ export const APP_ERROR = {
 	NOT_FOUND:'Not found',
 
 	// EVENTS_ERRORS
-	EVENT_EXIST:"With this date and time event already exist"
+	EVENT_EXIST:'With this date and time event already exist'
 }
