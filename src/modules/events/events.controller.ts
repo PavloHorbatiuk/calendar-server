@@ -39,7 +39,7 @@ export class EventsController {
 		return this.eventsService.update(+id, updateEventDto);
 	}
 
-	@Delete('/delete/:id')
+	@Delete('/:id')
 	remove(@Param('id') id: string) {
 		return this.eventsService.remove(+id);
 	}
