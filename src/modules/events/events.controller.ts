@@ -1,3 +1,4 @@
+import { CacheInterceptor } from '@nestjs/cache-manager';
 import { Controller, Get, Post, Body, Patch, Param, Delete, Req, UseGuards, UseInterceptors } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
@@ -7,7 +8,6 @@ import { UpdateEventDto } from './dto/update-event.dto';
 import { EventsService } from './events.service';
 
 import type { EventSchema } from './entities/event.entity';
-import { CacheInterceptor } from '@nestjs/cache-manager';
 
 @ApiTags('API')
 @UseInterceptors(CacheInterceptor)
@@ -28,7 +28,7 @@ export class EventsController {
 	async findAll(@Req() request): Promise<EventSchema[]> {
 		const user = request.user
 
-		return await  this.eventsService.findAll(user);
+		return await this.eventsService.findAll(user);
 	}
 
 	@Get(':id')
@@ -41,7 +41,7 @@ export class EventsController {
 		return this.eventsService.update(+id, updateEventDto);
 	}
 
-	@Delete('/delete/:id')
+	@Delete('/:id')
 	remove(@Param('id') id: string) {
 		return this.eventsService.remove(+id);
 	}
