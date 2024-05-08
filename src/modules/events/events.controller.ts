@@ -31,18 +31,22 @@ export class EventsController {
 		return await  this.eventsService.findAll(user);
 	}
 
-	@Get(':id')
-	findOne(@Param('id') id: string) {
-		return this.eventsService.findOne(+id);
-	}
+	// @Get(':id')
+	// findOne(@Param('id') id: string) {
+	// 	return this.eventsService.findOne(+id);
+	// }
 
 	@Patch(':id')
 	update(@Param('id') id: string, @Body() updateEventDto: UpdateEventDto) {
 		return this.eventsService.update(+id, updateEventDto);
 	}
 
-	@Delete('/delete/:id')
+	@Delete('/:id')
 	remove(@Param('id') id: string) {
 		return this.eventsService.remove(+id);
+	}
+	@Get('/event-placed')
+	place(@Body() createEventDto: CreateEventDto){
+		return this.eventsService.placeEvent(createEventDto)
 	}
 }
