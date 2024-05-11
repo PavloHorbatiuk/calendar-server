@@ -30,8 +30,8 @@ export class EventsService {
 		return await this.prisma.event.findFirst({ where:{ id:id } })
 	}
 
-	async update(id: number, updateEventDto: UpdateEventDto) {
-		return  await this.prisma.event.update({ where:{ id:id },data:{ ...updateEventDto } })
+	async update(updateEventDto: UpdateEventDto) {
+		return  await this.prisma.event.update({ where:{ id: updateEventDto.id }, data:{ ...updateEventDto } })
 	}
 
 	async remove(id: number) {
@@ -46,6 +46,7 @@ export class EventsService {
 
 	placeEvent(event:CreateEventDto){
 		this.rabbitClient.emit('event-placed', event)
-		return{message:"Order Placed!"}
+
+		return { message:'Order Placed!' }
 	}
 }
