@@ -11,6 +11,7 @@ model event {
   id       Int      @id @default(autoincrement())
   name     String
   isDone   Boolean
+  isPaid   Boolean
   price    Int
   date     DateTime
   authorId Int

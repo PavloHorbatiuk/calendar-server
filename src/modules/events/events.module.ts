@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
-import { PrismaModule } from 'src/prisma/prisma.module';
 import { ClientsModule, Transport } from '@nestjs/microservices';
+import { PrismaModule } from 'src/prisma/prisma.module';
 
 
 import { EventsController } from './events.controller';

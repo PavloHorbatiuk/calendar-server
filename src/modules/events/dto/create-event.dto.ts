@@ -23,4 +23,9 @@ export class CreateEventDto {
     @IsNotEmpty()
     @ApiProperty()
     isDone: boolean;
+
+    @IsBoolean()
+    @IsNotEmpty()
+    @ApiProperty()
+    isPaid: boolean;
 }
