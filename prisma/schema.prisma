@@ -1,13 +1,16 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "mysql"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
-model event {
+model Event {
   id       Int      @id @default(autoincrement())
   name     String
   isDone   Boolean
@@ -15,15 +18,15 @@ model event {
   price    Int
   date     DateTime
   authorId Int
-  author   user     @relation(fields: [authorId], references: [id], map: "Event_authorId_fkey")
+  author   User     @relation(fields: [authorId], references: [id])
 
-  @@index([authorId], map: "Event_authorId_fkey")
+  // @@index([authorId], map: "Event_authorId_fkey")
 }
 
-model user {
+model User {
   id       Int     @id @default(autoincrement())
   email    String  @unique(map: "User_email_key")
   name     String?
   password String?
-  event    event[]
+  event    Event[]
 }

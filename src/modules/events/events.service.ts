@@ -5,7 +5,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 
 import type { CreateEventDto } from './dto/create-event.dto';
 import type { UpdateEventDto } from './dto/update-event.dto';
-import type { user } from '@prisma/client';
+import type { User } from '@prisma/client';
 
 
 @Injectable()
@@ -22,7 +22,7 @@ export class EventsService {
 	}
 
 
-	async findAll(user: user) {
+	async findAll(user: User) {
 		return await this.prisma.event.findMany({ where: { authorId: +user.id } });
 	}
 
