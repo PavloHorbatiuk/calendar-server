@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -19,8 +16,6 @@ model Event {
   date     DateTime
   authorId Int
   author   User     @relation(fields: [authorId], references: [id])
-
-  // @@index([authorId], map: "Event_authorId_fkey")
 }
 
 model User {
