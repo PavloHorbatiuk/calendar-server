@@ -12,13 +12,13 @@ export class UsersController {
 
 	@ApiResponse({ status: 200, type: UpdateUserDto })
 	@UseGuards(JwtAuthGuard)
-	@Patch('update')
+	@Patch('/update')
 	updateUser(@Body() userDto: UpdateUserDto ): Promise<UpdateUserDto> {
 		return this.userService.updateUser(userDto)
 	}
 
 	@ApiResponse({ status: 200 })
-	@Delete('delete')
+	@Delete('/delete')
 	@UseGuards(JwtAuthGuard)
 	deleteUser(@Req() request): Promise<boolean> {
 		const user = request.user.email

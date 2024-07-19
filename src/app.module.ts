@@ -21,7 +21,8 @@ import type { MiddlewareConsumer, NestModule } from '@nestjs/common';
 		EventsModule,
 		ConfigModule.forRoot({ envFilePath: '.env' }),
 		TokenModule,
-		CacheModule.register({ isGlobal:true, ttl: 30 * 10000,
+		CacheModule.register({
+			isGlobal: true, ttl: 30 * 10000,
 			store: redisStore
 		}),
 	],
@@ -31,6 +32,7 @@ import type { MiddlewareConsumer, NestModule } from '@nestjs/common';
 export class AppModule implements NestModule {
 	configure(consumer: MiddlewareConsumer) {
 		consumer
-	  .apply(LoggerMiddleware)
-	  .forRoutes({ path:'*', method: RequestMethod.ALL });
-	} }
+			.apply(LoggerMiddleware)
+			.forRoutes({ path: '*', method: RequestMethod.ALL });
+	}
+}
